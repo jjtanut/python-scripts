@@ -63,3 +63,9 @@ target/
 
 # Virtualenv
 venv/
+
+# Mac files
+**/.DS_store
+
+# VIM swap files
+**/*.swp
