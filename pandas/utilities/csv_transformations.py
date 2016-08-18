@@ -1,4 +1,4 @@
-import pandas as pd
+
 
 def concat_fieldvalues(mydataframe, fieldnames, separator=' ', nan_substitute=''):
     """
