@@ -36,6 +36,14 @@ class TestCsvConcatenationTransformations(unittest.TestCase):
 
         assert_series_equal(self.df["new_concat_field_a"], expected_result_ab['new_concat_field_a'])
 
+    def test_concat_NaNs_returns_NaN(self):
+        mydf = self.df.copy(deep=True)
+        mydf["new_concat_field_bc"] = concat_fieldvalues(self.df, ['b', 'c'])
+
+        expected_result_bc = pd.DataFrame({'new_concat_field_bc': ['y z', 'y z', np.nan]})
+        assert_series_equal(mydf["new_concat_field_bc"], expected_result_bc["new_concat_field_bc"])
+
+    #@unittest.skip('will fail--doesnt currently strip whitespaces before concat')
     def test_leading_trailing_whitespaces_in_fields_are_stripped(self):
         """ any leading/trailing whitespaces within a column will be stripped before concatenation occurs"""
         self.df["new_concat_field_ae"] = concat_fieldvalues(self.df, ['a', 'e'])
@@ -45,4 +53,3 @@ class TestCsvConcatenationTransformations(unittest.TestCase):
 
     def tearDown(self):
         del self.df
-

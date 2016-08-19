@@ -1,4 +1,4 @@
-
+import numpy as np
 
 def concat_fieldvalues(mydataframe, fieldnames, separator=' ', nan_substitute=''):
     """
@@ -20,8 +20,12 @@ def concat_fieldvalues(mydataframe, fieldnames, separator=' ', nan_substitute=''
     firstfield = fieldnames[0]
     otherfields = fieldnames[1:]
 
-    mydata = mydataframe[firstfield].str.cat(others=[mydataframe[col].str.strip() for col in otherfields], sep=separator, na_rep=nan_substitute)
+    mydata = mydataframe[firstfield].str.cat(others=[mydataframe[col] for col in otherfields], sep=separator, na_rep=nan_substitute)
 
     # strip any leading/trailing whitespaces
     mydata = mydata.map(str.strip)
+
+    # since concatenating 2 or more NaNs will give you a '' entry, now have to replace any of these with NaNs
+    mydata.replace('', np.nan, inplace=True)
+
     return mydata
