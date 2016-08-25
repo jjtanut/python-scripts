@@ -24,7 +24,7 @@ class MultivaluedTable(object):
         return df_by_unique_key.set_index(keyfield)
 
     @staticmethod
-    def profile_uniques(dataframe, keyfield, fields_to_profile, casesensitive=False, outfile=None):
+    def profile_uniques(dataframe, keyfield, fields_to_profile, casesensitive=False, outfile=None, debug_multiple_uniques=False):
         """
         Analyzes the max, min, and average number of unique values in a csv around a key field, grouped by each field
         specified in the input. (NaNs are not counted as values). Outputs these results to a csv if desired.
@@ -33,6 +33,7 @@ class MultivaluedTable(object):
         :param fields_to_profile: list of fieldnames identifying fields to provile
         :param casesensitive: currently does not do anything
         :param outfile: path and name of file to write results to
+        :param debug_print_uniques: set to True to print out a list of uniques for all records that have >1 unique value
         :return: a nested dictionary {"fieldname1": {"max_uniques": 1, ... }, "fieldname2": {...} }
         """
 
@@ -43,6 +44,13 @@ class MultivaluedTable(object):
         for field in fields_to_profile:
             # Equivalent to: SELECT keyfield, COUNT(distinct field) FROM table GROUP BY keyfield
             count_by_key = dataframe.groupby(keyfield)[field].nunique()
+
+            # if user wants to debug, print output to stdout
+            if debug_multiple_uniques:
+                uniques = dataframe.groupby(keyfield)[field].unique()
+                for idx, value in count_by_key.iteritems():
+                    if value>1: print("recordKey: " + str(idx) + ", values: " + str(uniques[idx]))
+
             fieldstats = {"max_uniques": count_by_key.max(),
                           "avg_uniques": count_by_key.mean(),
                           "min_uniques": count_by_key.min()}

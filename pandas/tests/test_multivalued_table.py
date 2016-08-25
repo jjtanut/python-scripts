@@ -3,6 +3,12 @@ import pandas as pd
 import numpy as np
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
+#add parent directory into search path
+import os
+import sys
+script_dir = os.path.dirname(os.path.abspath(__file__)) #current directory of the python script
+sys.path.append(os.path.join(script_dir,os.pardir))
+
 from utilities.multivalued_table import MultivaluedTable
 
 class TestMultivaluedTableProfiling(unittest.TestCase):
